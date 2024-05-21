@@ -17,5 +17,4 @@ Each service will be in it's own independent branch.
 1. Allow Users to learn a new tech buzzword through either UI, Email, and/or Text.
 
 ## Visual Full Stack Flow chart
-
-![img] (images\Tech-Buzzword-Newsletter-System-Design-Diagram.png)
+<img src="images\Tech-Buzzword-Newsletter-System-Design-Diagram.png" />

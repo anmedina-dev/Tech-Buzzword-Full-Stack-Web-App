@@ -22,7 +22,8 @@ func NewRouter() *gin.Engine {
 
 	version := router.Group(os.Getenv("VERSION"))
 	{
-		version.GET(os.Getenv("BUZZWORD_ROUTE"), buzzword.Retrieve)
+		version.GET(os.Getenv("BUZZWORD_ROUTE"), buzzword.RetrieveBuzzword)
+		version.GET(os.Getenv("PREVIOUS_BUZZWORDS_ROUTE"), buzzword.RetrievePreviousBuzzwords)
 	}
 
 	return router

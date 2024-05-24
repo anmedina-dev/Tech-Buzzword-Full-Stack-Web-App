@@ -1,23 +1,37 @@
 package middleware
 
 import (
-	"fmt"
+	"crypto/sha256"
+	"crypto/subtle"
 	"os"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
+func sha256Sum(s string) []byte {
+	sum := sha256.Sum256([]byte(s))
+	arr := make([]byte, len(sum))
+	copy(arr, sum[:])
+
+	return arr
+}
+
+func secureCompare(a, b string) int {
+	aSum := sha256Sum(a)
+	bSum := sha256Sum(b)
+
+	return subtle.ConstantTimeCompare(aSum, bSum)
+}
+
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		whitelistedIPs := strings.Split(os.Getenv("WHITELISTED_IPS"), ",")
+		authKeyFromRequest := c.Request.Header.Get("authorization")
+		authorizationKey := os.Getenv("AUTHORIZED_KEY")
 		whitelisted := false
-		for _, v := range whitelistedIPs {
-			fmt.Printf("Client IP: %s, item:  %s\n", c.ClientIP(), v)
-			if v == c.ClientIP() {
-				whitelisted = true
-			}
+		if secureCompare(authKeyFromRequest, authorizationKey) == 1 {
+			whitelisted = true
 		}
+
 		if !whitelisted {
 			c.AbortWithStatusJSON(403, gin.H{"error": "ACCESS DENIED"})
 		}

@@ -1,8 +1,9 @@
 package cron
 
 import (
+	"fmt"
 	"os"
-	"tech-buzzword-service/controllers"
+	"tech-buzzword-service/buzzword"
 
 	"github.com/robfig/cron/v3"
 )
@@ -10,8 +11,8 @@ import (
 type fn func()
 
 func Init() {
-	controllers.InitBuzzword()
-	StartCron(controllers.InitBuzzword)
+	fmt.Println("Initializing Cron")
+	StartCron(buzzword.Init)
 }
 
 func StartCron(cronFunction fn) {

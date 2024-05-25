@@ -2,6 +2,7 @@ package server
 
 import (
 	"os"
+	"strings"
 	"tech-buzzword-service/controllers"
 	"tech-buzzword-service/middleware"
 
@@ -15,9 +16,9 @@ func NewRouter() *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	// fmt.Println(whitelistedIPs)
+	whitelistedIPs := strings.Split(os.Getenv("WHITELISTED_IPS"), ",")
 	router.ForwardedByClientIP = true
-	router.SetTrustedProxies(nil)
+	router.SetTrustedProxies(whitelistedIPs)
 
 	health := new(controllers.HealthController)
 

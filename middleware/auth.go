@@ -28,9 +28,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		whitelistedIPs := strings.Split(os.Getenv("WHITELISTED_IPS"), ",")
 		requestedIP := c.Request.Header.Get("X-Forwarded-For")
-		if requestedIP == "" {
-			c.AbortWithStatusJSON(403, gin.H{"error": "ACCESS DENIED"})
-		}
+		
 		whitelisted := false
 		for _, value := range whitelistedIPs {
 			if secureCompare(requestedIP, value) == 1 {

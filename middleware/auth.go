@@ -3,6 +3,7 @@ package middleware
 import (
 	"crypto/sha256"
 	"crypto/subtle"
+	"fmt"
 	"os"
 	"strings"
 
@@ -28,9 +29,10 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		whitelistedIPs := strings.Split(os.Getenv("WHITELISTED_IPS"), ",")
 		requestedIP := c.Request.Header.Get("X-Forwarded-For")
-		
+
 		whitelisted := false
 		for _, value := range whitelistedIPs {
+			fmt.Println(requestedIP, value)
 			if secureCompare(requestedIP, value) == 1 {
 				whitelisted = true
 			}

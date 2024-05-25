@@ -1,4 +1,4 @@
-package buzzword
+package models
 
 import (
 	"context"
@@ -84,11 +84,11 @@ func InitPreviousBuzzwords(coll *mongo.Collection) {
 	prevBuzzwords = result
 }
 
-func GetBuzzword() *Buzzword {
+func (b Buzzword) GetBuzzword() *Buzzword {
 	return buzzword
 }
 
-func GetPreviousBuzzwords() []*Buzzword {
+func (b Buzzword) GetPreviousBuzzwords() []*Buzzword {
 	return prevBuzzwords
 }
 

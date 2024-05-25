@@ -3,7 +3,7 @@ package cron
 import (
 	"fmt"
 	"os"
-	"tech-buzzword-service/buzzword"
+	"tech-buzzword-service/models"
 
 	"github.com/robfig/cron/v3"
 )
@@ -12,7 +12,7 @@ type fn func()
 
 func Init() {
 	fmt.Println("Initializing Cron")
-	StartCron(buzzword.Init)
+	StartCron(models.Init)
 }
 
 func StartCron(cronFunction fn) {

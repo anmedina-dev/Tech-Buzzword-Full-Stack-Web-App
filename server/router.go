@@ -9,12 +9,17 @@ import (
 )
 
 func NewRouter() *gin.Engine {
+	// Comment this when running locally
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
+	// fmt.Println(whitelistedIPs)
+	router.ForwardedByClientIP = true
+	router.SetTrustedProxies(nil)
+
 	health := new(controllers.HealthController)
-	buzzword := new(controllers.Buzzword)
 
 	router.GET(os.Getenv("HEALTH"), health.Status)
 
@@ -22,6 +27,7 @@ func NewRouter() *gin.Engine {
 
 	version := router.Group(os.Getenv("VERSION"))
 	{
+		buzzword := new(controllers.BuzzwordController)
 		version.GET(os.Getenv("BUZZWORD_ROUTE"), buzzword.RetrieveBuzzword)
 		version.GET(os.Getenv("PREVIOUS_BUZZWORDS_ROUTE"), buzzword.RetrievePreviousBuzzwords)
 	}

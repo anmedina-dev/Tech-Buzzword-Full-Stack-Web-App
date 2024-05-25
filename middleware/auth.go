@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,11 +26,16 @@ func secureCompare(a, b string) int {
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authKeyFromRequest := c.Request.Header.Get("authorization")
-		authorizationKey := os.Getenv("AUTHORIZED_KEY")
+		whitelistedIPs := strings.Split(os.Getenv("WHITELISTED_IPS"), ",")
+		requestedIP := c.Request.Header.Get("X-Forwarded-For")
+		if requestedIP == "" {
+			c.AbortWithStatusJSON(403, gin.H{"error": "ACCESS DENIED"})
+		}
 		whitelisted := false
-		if secureCompare(authKeyFromRequest, authorizationKey) == 1 {
-			whitelisted = true
+		for _, value := range whitelistedIPs {
+			if secureCompare(requestedIP, value) == 1 {
+				whitelisted = true
+			}
 		}
 
 		if !whitelisted {

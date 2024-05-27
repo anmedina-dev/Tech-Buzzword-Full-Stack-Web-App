@@ -70,7 +70,7 @@ func InitPreviousBuzzwords() {
 		},
 		{
 			Key:   "Date",
-			Value: bson.D{{Key: "$lte", Value: time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, time.Local)}},
+			Value: bson.D{{Key: "$lt", Value: time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day()+1, 0, 0, 0, 0, time.Local)}},
 		},
 	}
 

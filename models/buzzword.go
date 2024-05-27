@@ -15,6 +15,7 @@ import (
 
 var buzzword *Buzzword
 var prevBuzzwords []*Buzzword
+var coll *mongo.Collection
 
 type Buzzword struct {
 	ID          primitive.ObjectID `bson:"_id"`
@@ -26,12 +27,12 @@ type Buzzword struct {
 }
 
 func Init() {
-	coll := db.GetColl()
-	InitBuzzword(coll)
-	InitPreviousBuzzwords(coll)
+	InitColl()
+	InitBuzzword()
+	InitPreviousBuzzwords()
 }
 
-func InitBuzzword(coll *mongo.Collection) {
+func InitBuzzword() {
 	fmt.Println("Initializing Buzzword")
 	ifBuzzwordTodayExists := bson.D{{
 		Key:   "Date",
@@ -46,7 +47,7 @@ func InitBuzzword(coll *mongo.Collection) {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			fmt.Println("No documents found, need to set new Buzzword")
-			randomBuzz, randNumErr := GetRandomBuzzword(coll)
+			randomBuzz, randNumErr := GetRandomBuzzword()
 			if randNumErr != nil {
 				panic(randNumErr)
 			}
@@ -60,7 +61,7 @@ func InitBuzzword(coll *mongo.Collection) {
 	buzzword = result
 }
 
-func InitPreviousBuzzwords(coll *mongo.Collection) {
+func InitPreviousBuzzwords() {
 	fmt.Println("Initializing Previous Buzzwords")
 	prevBuzzwordsFilter := bson.D{
 		{
@@ -84,12 +85,27 @@ func InitPreviousBuzzwords(coll *mongo.Collection) {
 	prevBuzzwords = result
 }
 
+func InitColl() {
+	coll = db.GetColl()
+}
+
 func (b Buzzword) GetBuzzword() *Buzzword {
 	return buzzword
 }
 
 func (b Buzzword) GetPreviousBuzzwords() []*Buzzword {
 	return prevBuzzwords
+}
+
+func (b Buzzword) SetNewBuzzword() {
+	fmt.Println("Setting new buzzword")
+	randomBuzz, randNumErr := GetRandomBuzzword()
+	if randNumErr != nil {
+		panic(randNumErr)
+	}
+	fmt.Printf("New Buzzword: %s\n", randomBuzz.Buzzword)
+	buzzword = randomBuzz
+	InitPreviousBuzzwords()
 }
 
 func GetPotentialBuzzwords(coll *mongo.Collection) []Buzzword {
@@ -107,15 +123,15 @@ func GetPotentialBuzzwords(coll *mongo.Collection) []Buzzword {
 	return results
 }
 
-func UpdateNewBuzzword(coll *mongo.Collection, word Buzzword) {
+func UpdateNewBuzzword(word Buzzword) {
 	fmt.Println("Update New Buzzword in Mongo")
 	filter := bson.D{{Key: "_id", Value: word.ID}}
 	update := bson.D{{Key: "$set", Value: bson.D{{Key: "HasBeenSaid", Value: true}, {Key: "Date", Value: time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), 0, 0, 0, 0, time.Local)}}}}
-	result, _ := coll.UpdateOne(context.TODO(), filter, update)
-	fmt.Printf("Documents matched: %v\n", result.MatchedCount)
+	coll.UpdateOne(context.TODO(), filter, update)
+	fmt.Println("Updated Buzzword")
 }
 
-func GetRandomBuzzword(coll *mongo.Collection) (*Buzzword, error) {
+func GetRandomBuzzword() (*Buzzword, error) {
 	fmt.Println("Getting new random buzzword")
 	possibleBuzzwords := GetPotentialBuzzwords(coll)
 	if len(possibleBuzzwords) < 1 {
@@ -124,6 +140,6 @@ func GetRandomBuzzword(coll *mongo.Collection) (*Buzzword, error) {
 	randomNum := rand.Intn(len(possibleBuzzwords))
 	newBuzzword := &possibleBuzzwords[randomNum]
 	fmt.Printf("New Buzzword: %s\n", newBuzzword.Buzzword)
-	UpdateNewBuzzword(coll, *newBuzzword)
+	UpdateNewBuzzword(*newBuzzword)
 	return newBuzzword, nil
 }

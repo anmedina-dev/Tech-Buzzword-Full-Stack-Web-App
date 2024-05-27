@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"tech-buzzword-service/models"
+	"tech-buzzword-service/util"
 
 	"github.com/gin-gonic/gin"
 
@@ -30,4 +31,17 @@ func (b BuzzwordController) RetrievePreviousBuzzwords(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Previous Buzzwords!", "previous_buzzwords": buzzwords})
+}
+
+func (b BuzzwordController) SetNewBuzzword(c *gin.Context) {
+	currentBuzzword := buzzwordModel.GetBuzzword().Buzzword
+	buzzwordModel.SetNewBuzzword()
+	newBuzzword := buzzwordModel.GetBuzzword().Buzzword
+
+	if util.SecureCompare(currentBuzzword, newBuzzword) == 1 {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Buzzword didn't update", "error": "error"})
+		c.Abort()
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Buzzwords updated"})
 }

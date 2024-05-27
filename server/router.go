@@ -31,6 +31,7 @@ func NewRouter() *gin.Engine {
 		buzzword := new(controllers.BuzzwordController)
 		version.GET(os.Getenv("BUZZWORD_ROUTE"), buzzword.RetrieveBuzzword)
 		version.GET(os.Getenv("PREVIOUS_BUZZWORDS_ROUTE"), buzzword.RetrievePreviousBuzzwords)
+		version.POST(os.Getenv("SET_NEW_BUZZWORD"), buzzword.SetNewBuzzword)
 	}
 
 	return router

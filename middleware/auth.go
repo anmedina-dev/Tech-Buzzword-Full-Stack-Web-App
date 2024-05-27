@@ -1,29 +1,13 @@
 package middleware
 
 import (
-	"crypto/sha256"
-	"crypto/subtle"
 	"fmt"
 	"os"
 	"strings"
+	"tech-buzzword-service/util"
 
 	"github.com/gin-gonic/gin"
 )
-
-func sha256Sum(s string) []byte {
-	sum := sha256.Sum256([]byte(s))
-	arr := make([]byte, len(sum))
-	copy(arr, sum[:])
-
-	return arr
-}
-
-func secureCompare(a, b string) int {
-	aSum := sha256Sum(a)
-	bSum := sha256Sum(b)
-
-	return subtle.ConstantTimeCompare(aSum, bSum)
-}
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -33,7 +17,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		whitelisted := false
 		for _, value := range whitelistedIPs {
 			fmt.Println(requestedIP, value)
-			if secureCompare(requestedIP, value) == 1 {
+			if util.SecureCompare(requestedIP, value) == 1 {
 				whitelisted = true
 			}
 		}

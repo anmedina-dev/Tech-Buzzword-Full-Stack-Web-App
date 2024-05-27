@@ -108,7 +108,7 @@ func (b Buzzword) SetNewBuzzword() {
 	InitPreviousBuzzwords()
 }
 
-func GetPotentialBuzzwords(coll *mongo.Collection) []Buzzword {
+func GetPotentialBuzzwords() []Buzzword {
 	fmt.Println("Getting list of potential buzzwords")
 	filter := bson.D{{Key: "HasBeenSaid", Value: false}}
 	cursor, err := coll.Find(context.TODO(), filter)
@@ -133,7 +133,7 @@ func UpdateNewBuzzword(word Buzzword) {
 
 func GetRandomBuzzword() (*Buzzword, error) {
 	fmt.Println("Getting new random buzzword")
-	possibleBuzzwords := GetPotentialBuzzwords(coll)
+	possibleBuzzwords := GetPotentialBuzzwords()
 	if len(possibleBuzzwords) < 1 {
 		return nil, errors.New("area calculation failed, radius is less than zero")
 	}

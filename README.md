@@ -95,6 +95,15 @@ date: date || null
 2. Send tech buzzword of the day via HTTP Request.
 3. Update and handle tech buzzword collection.
 
+### Cron Service
+
+<b>Branch: </b> service/cron-service
+<b>Description: </b> Service written in Go.
+<b>Functions: </b>
+
+1. Handle changing tech buzzword everyday.
+2. Handle sending text message and email on new tech buzzword.
+
 ## Client Layer
 
 Implement ReactJS UI application where users can

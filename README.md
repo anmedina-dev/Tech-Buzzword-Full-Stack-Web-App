@@ -35,41 +35,49 @@ Because of the lack of need for a relational database in this web application, t
 
 In this collection will be stored user data for those who signed up to be apart of the email newsletter.
 
-<b>Schema</b>
-id: string
-email: string
+<b>Email User Schema</b>
+<ul style="list-style: none;">
+    <li>id: string</li>
+    <li>email: string</li>
+</ul>
 
 ### Text Users Collection
 
 In this collection will be stored user data for those who signed up to be apart of the text message newsletter.
 
-<b>Schema</b>
-id: string
-number: string
+<b>SMS User Schema</b>
+<ul style="list-style: none;">
+    <li>id: string</li>
+    <li>phoneNumber: string</li>
+</ul>
+
 
 ### Tech Buzzword Collection
 
 In this collection will be stored the tech buzzwords, their definitions, whether or not they have been sent, and date if they have been sent.
 
-<b>Schema</b>
-id: string
-buzzword: string
-definition: string
-hasBeenSaid: boolean
-date: date || null
+<b>Tech Buzzword Schema</b>
+<ul style="list-style: none;">
+    <li>id: string</li>
+    <li>buzzword: string</li>
+    <li>definition: string</li>
+    <li>hasBeenSaid: boolean</li>
+    <li>date: date || null</li>
+</ul>
 
 ## Service Layer
 
 ### Load Balancer
 
-<b>Branch: </b> service/load-balancer
-<b>Description: </b> Redirect HTTP requests from the Client Layer to the appropriate service.
+<b>Branch: </b> service/load-balancer \
+<b>Description</b> Service written in Go. \
+<b>Function: </b> Redirect HTTP requests from the Client Layer to the appropriate service.
 
 ### Email Service
 
-<b>Branch: </b> service/email-service
-<b>Description: </b> Service written in Go.
-<b>Functions: </b>
+<b>Branch: </b> service/email-service \
+<b>Description: </b> Service written in Go. \
+<b>Functions: </b> 
 
 1. Handle signing users up for the email newsletter.
 2. Removing users if they choose to be removed from email newsletter.
@@ -77,8 +85,8 @@ date: date || null
 
 ### SMS Service
 
-<b>Branch: </b> service/sms-service
-<b>Description: </b> Service written in Go.
+<b>Branch: </b> service/sms-service \
+<b>Description: </b> Service written in Go. \
 <b>Functions: </b>
 
 1. Handle signing users up for the sms newsletter.
@@ -87,8 +95,8 @@ date: date || null
 
 ### Tech Buzzword Service
 
-<b>Branch: </b> service/tech-buzzword-service
-<b>Description: </b> Service written in Go.
+<b>Branch: </b> service/tech-buzzword-service \
+<b>Description: </b> Service written in Go. \
 <b>Functions: </b>
 
 1. Handle choosing tech buzzword of the day.
